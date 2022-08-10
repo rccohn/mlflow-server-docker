@@ -1,0 +1,5 @@
+HOST artifact-store
+	User sftp
+	# needed to allow container to automatically connect to artifact store
+	# without manual input
+	StrictHostKeyChecking no

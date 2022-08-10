@@ -1,0 +1,2 @@
+mlflow==1.27.0
+python-dotenv==0.20.0

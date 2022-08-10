@@ -1,0 +1,50 @@
+#  environment variables used in compose file are stored in .env
+# docker-compose looks for .env by default, or you can
+# use docker-compose --env-file <environment file> --file <docker-compose file>
+
+services:
+  tracking-backend:
+    image: postgres:14.4-alpine3.16
+    container_name: mlf-tracking-db
+    environment:
+      POSTGRES_PASSWORD: ${PGPASS}
+    volumes:
+      - type: bind
+        source: ./bind-mounts/postgres
+        target: /var/lib/postgresql/data
+        read_only: false
+
+  artifact-store:
+    build: ./docker-images/sftp-server
+    container_name: mlf-tracking-artifacts
+    environment:
+      - MLF_PUBLIC_KEY
+    volumes:
+      - type: bind
+        source: ./bind-mounts/artifacts
+        target: /home/sftp/artifacts
+        read_only: false
+
+  mlflow-server:
+    depends_on: # need to start backend services so mlflow server can connect to them
+    # when it starts
+      - tracking-backend
+      - artifact-store
+    build: ./docker-images/mlflow-server # image containing mlflow
+    container_name: mlf-tracking-server # deepspparks example mlflow server
+    environment:
+      - MLF_PUBLIC_KEY
+      - MLF_PRIVATE_KEY
+
+    ports:
+      - ${MLFLOW_SERVER_PORT}:5000/tcp
+    restart: unless-stopped # auto-restart container if it unexpectedly shuts down
+    command: # arguments for mlflow server
+      - --backend-store-uri # connect to postgres db container for storing tracking data
+      - postgresql+psycopg2://postgres:${PGPASS}@tracking-backend:5432/postgres
+      - --artifacts-destination  # use proxy to sftp container to store artifacts
+      - sftp://sftp@artifact-store/home/sftp/artifacts
+      - --serve-artifacts
+      - --host # listen on 0.0.0.0- allow external traffic
+      - 0.0.0.0
+

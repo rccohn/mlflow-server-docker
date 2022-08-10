@@ -1,0 +1,6 @@
+# python virtual environment for running mlflow project
+env/
+
+# data saved to host machine and parameter files
+bind-mounts/*
+!bind-mounts/README.md

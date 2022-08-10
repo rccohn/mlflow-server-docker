@@ -1,0 +1,22 @@
+name: linear_regression_example
+
+docker_env:
+  image: mlflow-project-environment:full
+  environment:
+    # 
+    - [ USER_UID, "${UID}" ]
+    - LOGLEVEL
+  volumes:
+      # input file
+    - ${INPUT_PARAMS}:/mnt/params.json:ro
+      # log directory
+    - ${LOG_DIR}:/mnt/logs:rw
+entry_points:
+  main:
+    parameters:
+      # should be int, but mlflow only has float for numeric datatype
+      seed: {'type': float, default: 42}
+    command: python simple-lr-experiment.py {seed}
+  debug:
+    command: bash
+ 

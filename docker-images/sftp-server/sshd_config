@@ -1,0 +1,12 @@
+ListenAddress 0.0.0.0 # allow external traffic
+PasswordAuthentication no  # only use ssh keys, don't allow password login (more secure)
+PermitEmptyPasswords yes  # allow connection to accounts that don't have passwords
+
+# enable use of sftp
+Subsystem sftp internal-sftp
+
+# we don't need these fancy options for mlflow artifact store
+AllowTcpForwarding no
+GatewayPorts no
+X11Forwarding no
+
