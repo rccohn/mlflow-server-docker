@@ -9,8 +9,8 @@ services:
     environment:
       POSTGRES_PASSWORD: ${PGPASS}
     volumes:
-      - type: bind
-        source: ./bind-mounts/postgres
+      - type: volume
+        source: mlf-docker-tracking-db
         target: /var/lib/postgresql/data
         read_only: false
 
@@ -20,8 +20,8 @@ services:
     environment:
       - MLF_PUBLIC_KEY
     volumes:
-      - type: bind
-        source: ./bind-mounts/artifacts
+      - type: volume
+        source: mlf-docker-tracking-artifacts
         target: /home/sftp/artifacts
         read_only: false
 
@@ -48,3 +48,6 @@ services:
       - --host # listen on 0.0.0.0- allow external traffic
       - 0.0.0.0
 
+volumes:
+  mlf-docker-tracking-db:
+  mlf-docker-tracking-artifacts:

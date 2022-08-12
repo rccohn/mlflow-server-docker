@@ -29,16 +29,20 @@ COPY --from=builder /usr/local/sbin/su-exec /usr/local/sbin/su-exec
 
 # create python environment to run code
 COPY requirements.txt requirements.txt
-ARG VENV="/usr/local/share/env"
+
+ARG VENV=/usr/local/share/env
+
 RUN python -m venv ${VENV} && \
-    # automatically activate python environment by default
-    echo "PATH=${VENV}/bin:${PATH}" >> /etc/profile && \
     ${VENV}/bin/python -m pip install -r requirements.txt && \
     rm requirements.txt
 
+# automatically use our new python environment by default
+ENV PATH=${VENV}/bin:${PATH}
 
 WORKDIR /home
-COPY entrypoint_root.sh entrypoint_root.sh
-COPY entrypoint_non-root.sh entrypoint_non-root.sh
 
-ENTRYPOINT ["bash", "/home/entrypoint_root.sh"]
+# copy entrypoint script, add permissions to execute it, and
+# run the script on container start
+COPY entrypoint.sh entrypoint.sh
+RUN chmod +x entrypoint.sh
+ENTRYPOINT ["/home/entrypoint.sh"]

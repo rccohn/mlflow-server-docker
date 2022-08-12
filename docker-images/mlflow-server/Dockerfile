@@ -35,4 +35,5 @@ EXPOSE 5000
 
 # script to run on startup
 COPY --chown=mlf-server entrypoint.sh entrypoint.sh
-ENTRYPOINT ["bash", "entrypoint.sh"]
+RUN chmod +x entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]

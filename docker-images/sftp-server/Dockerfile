@@ -15,7 +15,8 @@ COPY entrypoint.sh entrypoint.sh
 
 # create ~/.ssh for non-root user "sftp" and 
 # configure it with correct ownership/permissions
-RUN mkdir .ssh && chmod 700 .ssh && chown sftp .ssh
+RUN mkdir .ssh && chmod 700 .ssh && chown sftp .ssh && \
+    chmod +x entrypoint.sh
 
 # artifact storage will be mounted so it will persist
 # even after container is closed
@@ -25,4 +26,4 @@ VOLUME /home/sftp/artifacts
 EXPOSE 22
 
 # run the entrypoint script on startup
-ENTRYPOINT ["ash", "entrypoint.sh"]
+ENTRYPOINT ["/home/sftp/entrypoint.sh"]

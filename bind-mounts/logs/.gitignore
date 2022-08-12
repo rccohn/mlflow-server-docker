@@ -1,0 +1,7 @@
+# Git does not add empty directories so we add a gitignore file to our logfile directory.
+
+# ignore everything in this directory
+*
+
+# except the .gitignore file itself.
+!.gitignore

@@ -1,5 +1,4 @@
 # Bind mounts
-To persist data on the host machine, even after the containers are stopped or even deleted, the relevant data directories are mounted to the host. **artifacts/** stores all mlflow experiment artifacts, and **postgres/** stores the tracking database entries. You can choose to store the data elsewhere by changing the mount locations in **docker-compose.yaml**. Note that in order for the container to read or write to a bind mount, it will need sufficient permissions. Unless you have a reason not to, the easiest way to ensure this can happen is by assigning 777 permissions (anyone can read, write, and execute files) to files and directories that are mounted:
-```bash
-$ chmod 777 path
-```
+Bind-mounting allows files to be shared between the host machine and container. In the context of mlflow experiments, there are 2 reasons we might want to use bind mounts. First, for experiments with large parameter sets, mounting an input file may be much more convenient than passing many arguments to `mlflow run`. Second, our experiment may generate files that we don't want to save to the tracking server, such as debugging logs, or files that we want to re-use in subsequent experiments, such as pre-processed data. 
+
+In our toy experiment, we mount the input parameters **parameters.json**, and save some logs that we don't want to keep in our mlflow database in **logs/**.

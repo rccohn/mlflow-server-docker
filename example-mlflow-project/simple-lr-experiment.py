@@ -30,8 +30,7 @@ def main():
     logdir = '/mnt/logs/'
     logformat = '%(process)d-%(levelname)s-%(message)s'
     log_level = {'debug': logging.DEBUG, 'info': logging.INFO}[os.environ['LOGLEVEL']]
-    print('testing')
-    print([x for x in Path('/mlflow','projects','code').glob('*')])
+    
     with mlflow.start_run() as run:
         logging.basicConfig(
             filename='{}/{}-{}.log'.format(logdir,
