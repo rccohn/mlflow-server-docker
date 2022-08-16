@@ -1,0 +1,7 @@
+name: linear_regression_example_minimal
+
+docker_env:
+  image: mlflow-project-environment:minimal
+entry_points:
+  main:
+    command: python simple-lr-experiment.py

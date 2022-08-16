@@ -1,5 +1,4 @@
 mlflow==1.27.0
 numpy==1.23.1
 plotly==5.9.0
-pysftp==0.2.9
 scikit-learn==1.1.2

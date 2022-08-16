@@ -1,0 +1,2 @@
+random_seed: 42 # seed for generating noise added to points
+n_points: 20  # number of points sampled in dataset

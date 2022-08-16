@@ -8,8 +8,7 @@ COPY requirements.txt requirements.txt
 
 # install virtual environment and dependencies
 RUN python -m venv /mlf-env && \
-    /mlf-env/bin/python -m pip install -r requirements.txt && \
-    mkdir /home/mlf-project # directory where python file saves some temp data during execution
+    /mlf-env/bin/python -m pip install -r requirements.txt
 
 # automatically activate python environment by default when calling "python"
 ENV PATH="/mlf-env/bin:${PATH}"

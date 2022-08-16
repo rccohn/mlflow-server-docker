@@ -1,0 +1,22 @@
+name: linear_regression_example
+
+docker_env:
+  image: mlflow-project-environment:full
+  environment:
+    - [ "USER_UID", "${UID}" ]
+    - "USE_CACHE"
+  volumes:
+      # input files
+    - ${INPUT_PARAMS}:/mnt/params.json:ro
+      # cache for saving pre-processed data
+    - ${CACHE_DIR}:/mnt/cache:rw
+entry_points:
+  main:
+    parameters:
+      # should be int, but mlflow does not have separate int datatype
+      degree: {type: float, default: 1}
+    command: python simple-lr-experiment.py {degree}
+
+  debug:
+    command: bash
+ 
