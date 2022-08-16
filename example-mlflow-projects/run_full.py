@@ -11,8 +11,8 @@ load_dotenv('../.env')
 
 # docker mounts need to be absolute paths
 # to make the defaults work, we expand them to absolute paths in python
-os.environ['INPUT_PARAMS'] = os.path.abspath(os.environ['INPUT_PARAMS'])
-os.environ['CACHE_DIR'] = os.path.abspath(os.environ['CACHE_DIR'])
+os.environ['INPUT_PARAMS'] = os.path.abspath('../'+os.environ['INPUT_PARAMS'])
+os.environ['CACHE_DIR'] = os.path.abspath('../'+os.environ['CACHE_DIR'])
 
 mlport = os.environ['MLFLOW_SERVER_PORT']
 

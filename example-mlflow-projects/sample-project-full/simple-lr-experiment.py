@@ -99,22 +99,24 @@ def main():
         
         fig.add_trace(go.Scatter(
             name='residuals',
-            mode='markers',
             x=residuals_x,
             y=residuals_y,
             mode='lines',
-            line={'dash': 'dash', 'color': 'red'}
+            legendrank=3,
+            line={'width':1, 'color': 'red'}
             ))
         fig.add_trace(go.Scatter(
             name='data',
             mode='markers',
             x=x[:, 0],
+            legendrank=2,
             y=y
             ))
         fig.add_trace(go.Scatter(
             name='fit (degree={})'.format(degree),
             mode='lines',
             x=x[:, 0],
+            legendrank=1,
             y=y_pred))
 
         fig.write_html('/home/mlf-project/results.html')
