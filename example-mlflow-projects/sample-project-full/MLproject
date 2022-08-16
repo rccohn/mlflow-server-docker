@@ -1,15 +1,22 @@
-name: linear_regression_example
+# simple project, but incorporates a more complex environment for some realistic use cases
+
+name: linear_regression_example # name stored in tracking db
 
 docker_env:
   image: mlflow-project-environment:full
-  environment:
-    - [ "USER_UID", "${UID}" ]
-    - "USE_CACHE"
-  volumes:
-      # input files
-    - ${INPUT_PARAMS}:/mnt/params.json:ro
-      # cache for saving pre-processed data
+  environment: # environment variables
+    - [ "USER_UID", "${UID}" ] # uid used to avoid permission issues for mounted files
+    - "USE_CACHE"  # if 'true', uses cached dataset instead of processing dataset each time project is run
+  volumes:  # mounted to container to persist data
+  # if there are many parameters, it might be easier to pass a parameter file to the container instead of
+  # having to specify many options for the mlflow run command.
+  # read-only mount ensures that input parameters are never altered by errors in code.
+    - ${INPUT_PARAMS}:/mnt/params.json:ro   # parameters for generating dataset
+  # cache for saving pre-processed data, avoiding increased computational cost when re-running experiments
+  # with different parameters.
     - ${CACHE_DIR}:/mnt/cache:rw
+
+# code that is run when executing mlflow run command.
 entry_points:
   main:
     parameters:
