@@ -5,9 +5,4 @@ This section contains Dockerfiles and required dependencies for building the ima
 - **sftp-server** is a simple, minimal ssh server configured for sftp connections. It is used to store artifacts (saved models, figures, etc) during experiments.
 - **mlflow-server** runs an instance of an mlflow server that can connect to a tracking db (like our postgres container, or a remote db server), and an artifact storage server (like our sftp-server, or a cloud storage bucket)
 
-Note that the mlflow and sftp server images can be built when running docker compose, so the only image that needs to be built manually is the experiment environment. To build the image, simply enter the **mlflow-project-environment/** folder and run the *docker build* command in **build-image.sh**:
-
-```bash
-$ cd mlflow-project-environment-full
-$ bash build-image.sh
-```
+Note that the mlflow and sftp server images can be built when running docker compose, so the only image that needs to be built manually is the experiment environment. To build the image, simply enter the **mlflow-project-environment-{minimal,full}/** folder and run the **build-image.sh** script.
