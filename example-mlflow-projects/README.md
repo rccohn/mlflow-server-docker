@@ -9,7 +9,6 @@ As the name suggests, **sample-project-minimal** provides a very simple project 
 
 ## Full-featured example 
 Although still simple, **sample-project-full** demonstrates several additional features compared to the minimal example that may be useful when running projects:
-
  - Three sets of input parameters are used, allowing parameter tuning to be performed without changing the project code.
    - The degree of the polynomial to be fit is passed as a parameter to the mlflow project itself.
    - Settings for generating the dataset are mounted to the container from an input deck located on the host (**bind-mounts/params.yaml**). This demonstrates how large numbers of parameters can be passed to projects without having to specify many of python or command line arguments. 
@@ -17,24 +16,42 @@ Although still simple, **sample-project-full** demonstrates several additional f
  - After generating the dataset with a given set of parameters, the data are saved to a cache in the host machine (**bind-mounts/cache**). After the project finishes and the container is removed, the processed data persists on the host machine. If the dataset has already been generated, the project can load the cached data instead of re-processing it.
  - The docker environment correctly handles permissions for the mounted files, instead of changing their ownership to root, preventing the user from accessing them without elevated permissions.
 
-# Running projects
+# Running the example projects
 
-As mentioned above, projects can be run with python (*[mlflow.projects.run](https://www.mlflow.org/docs/latest/python_api/mlflow.projects.html#mlflow.projects.run*)) or the command line interface (*[mlflow run](https://www.mlflow.org/docs/latest/cli.html#mlflow-run)*). Examples for running both projects with the python interface are provided in **run_full.py** and **run_minimal.py**. 
 ## Configure .env file
+Working default values are provided, so no action is needed. However,
+if you want to change any of the values, such as using your own ssh
+key for the connection to the artifact storage, run the server on a
+different port, etc, then you can update the values in mlflow-server-docker/.env.
 
 ## Configure virtual environment
+A simple python environment is required on the host to invoke mlflow to run the project.
+Docker would be complete overkill, so we just use python directly.
+
 ```bash
 $ python -m venv env # create virtual enviroment named env.
 $ # install dependencies to virtual environment
 $ source env/bin/activate && python -m pip install -r requirements.txt
+``` 
+
+## Start the tracking server
+Once the configuration is ready
+
+```bash
+# optional -d argument runs in 'detached' mode, avoiding the need to keep
+# the terminal open the entire time the server is needed
+$ cd .. && docker compose up -d
 ```
 ## Run desired project
+As mentioned above, projects can be run with python (*[mlflow.projects.run](https://www.mlflow.org/docs/latest/python_api/mlflow.projects.html#mlflow.projects.run*)) or the command line interface (*[mlflow run](https://www.mlflow.org/docs/latest/cli.html#mlflow-run)*). Examples for running both projects with the python interface are provided in **run_project.py**.
+
 To run minimal project: 
 ```bash
-$ source env/bin/activate && python run_minimal.py
+$ # replace "minimal" with "full" to run the full project instead
+$ source env/bin/activate && python run_project.py minimal
 ```
-To run full project:
-```bash 
-$ source env/bin/activate && python run_full.py
-```
+## View the results
+Open a browser and go to **http://localhost:5000** (assuming the server is running on port 5000.)
+You should see a table of run tracking data. Click on a run to view more details, including 
+the saved models, interactive figures, and more.
 
