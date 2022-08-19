@@ -5,7 +5,7 @@ name: linear_regression_example_minimal
 
 # parent image used to build environment that project runs in
 docker_env:
-  image: mlflow-project-environment:minimal
+  image: rccohn/example-mlflow-project-environment:minimal
 
 # command that gets executed after calling "mlflow run <project>"
 entry_points:

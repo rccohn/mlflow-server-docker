@@ -3,7 +3,7 @@
 name: linear_regression_example # name stored in tracking db
 
 docker_env:
-  image: mlflow-project-environment:full
+  image: rccohn/example-mlflow-project-environment:full
   environment: # environment variables
     - [ "USER_UID", "${UID}" ] # uid used to avoid permission issues for mounted files
     - "USE_CACHE"  # if 'true', uses cached dataset instead of processing dataset each time project is run

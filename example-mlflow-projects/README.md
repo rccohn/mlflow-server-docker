@@ -18,15 +18,10 @@ Although still simple, **sample-project-full** demonstrates several additional f
 
 # Running the example projects
 
-## Configure .env file
-Working default values are provided, so no action is needed. However,
-if you want to change any of the values, such as using your own ssh
-key for the connection to the artifact storage, run the server on a
-different port, etc, then you can update the values in mlflow-server-docker/.env.
-
-## Configure virtual environment
-A simple python environment is required on the host to invoke mlflow to run the project.
-Docker would be complete overkill, so we just use python directly.
+## Configure python environment
+A simple python environment is required on the host to invoke mlflow to run the project. With very few dependencies,
+a straightforward virtual environment is sufficient for managing this environment.
+Using docker for this purpose would actually be complete overkill, so we just use python directly.
 
 ```bash
 $ python -m venv env # create virtual enviroment named env.
@@ -35,23 +30,37 @@ $ source env/bin/activate && python -m pip install -r requirements.txt
 ``` 
 
 ## Start the tracking server
-Once the configuration is ready
+The tracking server needs to already be running before we run any mlflow project.
+If it is not already running, run:
 
 ```bash
-# optional -d argument runs in 'detached' mode, avoiding the need to keep
-# the terminal open the entire time the server is needed
+$ # optional -d argument runs in 'detached' mode, avoiding the need to keep
+$ # the terminal open the entire time the server is needed
 $ cd .. && docker compose up -d
 ```
 ## Run desired project
-As mentioned above, projects can be run with python (*[mlflow.projects.run](https://www.mlflow.org/docs/latest/python_api/mlflow.projects.html#mlflow.projects.run*)) or the command line interface (*[mlflow run](https://www.mlflow.org/docs/latest/cli.html#mlflow-run)*). Examples for running both projects with the python interface are provided in **run_project.py**.
+As mentioned above, projects can be run with python (*[mlflow.projects.run](https://www.mlflow.org/docs/latest/python_api/mlflow.projects.html#mlflow.projects.run)*) or the command line interface (*[mlflow run](https://www.mlflow.org/docs/latest/cli.html#mlflow-run)*). Examples for running both projects with the python interface are provided in **run_project.py**.
 
-To run minimal project: 
+To run the minimal project: 
 ```bash
-$ # replace "minimal" with "full" to run the full project instead
-$ source env/bin/activate && python run_project.py minimal
+$ WHICH_PROJECT="minimal" # replace "minimal" with "full" to run the full project instead
+$ source env/bin/activate && python run_project.py ${WHICH_PROJECT}
 ```
+
+###  **Note:**
+The docker images for running the example projects should automatically be downloaded from the [dockerhub repository](https://hub.docker.com/r/rccohn/example-mlflow-project-environment) the first time you run each project. However, if the automatic download does not work, then you can build the images locally by running the **build-image.sh** scripts located in **example-mlflow-project-environment/{full,minimal}**.
+
+```bash
+$ cd ../docker-images/example-mlflow-project-environment/${WHICH_PROJECT} && \
+    source build-image.sh
+```
+
 ## View the results
-Open a browser and go to **http://localhost:5000** (assuming the server is running on port 5000.)
+After running a project, open your favorite browser and go to **http://localhost:5000** (assuming the server is running on port 5000.)
 You should see a table of run tracking data. Click on a run to view more details, including 
 the saved models, interactive figures, and more.
 
+## Changing the default configurations
+Some configurations for the server and the full-featured project are located in **../env**.  Changing the definitions in this file will alter the configuration of the setup. For example, you can configure the mlflow server to run on a port other than 5000, change where cached datasets are saved when running the full-featured project, etc.
+
+You can change additional settings, such as using your own docker image for the mlflow server, by changing the configuration of **../docker-compose.yaml**

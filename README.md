@@ -3,48 +3,40 @@ Minimal, fully-containerized mlflow server with remote postgres tracking db and 
 
 # High-throughput, portable, reproducible, and organized experiments
 
+Computational researchers, especially in non-cs disciplines, are often expected to write large volumes of code without being taught good development practices. As a result, lots of academic code is messy and buggy, and researchers often "reinvent the wheel" instead of using published code. This project provides a simple, working example of **MLflow** deployed with **docker** for facilitating experiments, with the goal of making these tools easier to adopt by new users.
 
-Computational researchers, especially in non-cs disciplines, are often expected to write large volumes of code without being taught good development practices.
-  - Needing a figure from a study you ran 3 years ago, but not being able to find it.
-  - Code that used to run now seems to give different results or error out
-  - Code from a published paper doesn't work when you try to run it.
-  - Your collaborators promise that "it works on their machine", but you can't run it on yours.
-  - Many other issues
+## MLflow
+[MLflow](https://mlflow.org/) is a general-purpose MLOps tool. For academic research the main benefit it provides is experiment tracking. When running experiments, you can save input and output values, (learning rate, validation loss, etc) and "artifacts" (figures, saved models, etc). MLflow organizes all of these into a searchable database and provides browser-based and api-based methods for viewing the results. No more forgetting where that figure you need is, or having to combine 20 different spreadsheets to get a complete set of results. MLalow handles all of that for you.
 
+MLflow also provides "projects", which allow for easy packaging and sharing computational code. Although very simple to configure, structuring experiments as mlflow projects makes it much easier for scaling up experiments and allows new users to figure out how to reproduce results.
 
-
-
-## How it works
-
-
-## Why docker?
-
-
-## Why mlflow?
-
+## Docker
+In this project, mlflow tracking and experiments are deployed with [Docker](https://www.docker.com/), a container engine. *Containers* behave like lightweight virtual machines, providing consistent and isolated runtimes for the tracking server and experiments. By packaging components into containers, Docker is the *only* dependency needed to run the tracking server. In this project, mlflow uses PostgreSQL to store tracking data and SFTP
+to store *artifacts*. However, you don't need to install and configure these tools to use with mlflow. They are already included in the containers used to run the mlflow tracking server. Thus, using containers provides an easy and robust way to use software tools that would otherwise be difficult or time consuming to configure manually.
 
 # Installation
 ## Install docker
-The only dependency of the server is Docker. Follow the instructions from docker
+The only dependency for the server is Docker. Follow the [instructions](https://docs.docker.com/engine/install/) from docker
 to install it on your system. Since docker runs as root, you will likely need to
 run docker commands with **sudo** after installation. To run docker without sudo,
 you can add your user to the docker group:
 
 ```bash
-$ sudo usermod -ag docker ${USER}
+$ sudo groupadd docker
+$ sudo usermod -aG docker $USER
 ```
-Note that older installations of docker may not include docker compose. If you don't
-already have compose, update your installation of docker to a recent version.
+After logging out and logging back in, you should be able to run docker commands without sudo.
+
+Note that older installations of docker may not include docker compose, which is used for running the server from a configuration file. If you don't already have compose, update your installation of docker to a recent version.
   
 ## Run the server
 
-With docker installed, the server will work out of the box. Simply run
+With docker installed, the server will work out of the box. Simply run:
 ```bash
 $ # run without optional -d argument to view container status in terminal
 $ docker compose up -d
 ```
-and the server will run.
-
+Now you are ready to start running experiments!
 ## Adjust server settings
 Variable definitions, including the port that the mlflow server runs on 
 and the ssh key used to connect to artifact storage, are are specified in **.env**.
@@ -61,7 +53,7 @@ With the server running, you are ready to start tracking experiments!
 Minimal code is needed to start saving results to the mlflow server. The
 tracking commands can be inserted into existing code, minimizing the cost of adopting mlflow.
 A minimal example shows only 3 lines of code are needed to track a value:
-```python3
+```python
 >>> import mlflow
 >>> # tell mlflow where to save results to. assumes the server runs on port 5000
 >>> mlflow.set_tracking_uri("http://localhost:5000")
@@ -82,7 +74,7 @@ the saved models, interactive figures, and more.
 
 ## Python
 You can also access run results programatically in Python.
-```python3
+```python
 >>> import mlflow
 >>> mlflow.set_tracking_uri("http://localhost:5000")
 >>> # get unique identifier of experiment with name "Default"
@@ -91,3 +83,5 @@ You can also access run results programatically in Python.
 >>> df = mlflow.search_runs([exp_id,])
 ```
 
+# Need help?
+Feel free to submit questions and requests to the [issue tracker](https://github.com/rccohn/mlflow-server-docker/issues).
