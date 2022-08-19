@@ -37,10 +37,8 @@ $ # run without optional -d argument to view container status in terminal
 $ docker compose up -d
 ```
 Now you are ready to start running experiments!
-## Adjust server settings
-Variable definitions, including the port that the mlflow server runs on 
-and the ssh key used to connect to artifact storage, are are specified in **.env**.
-To use new values, simply change the definitions in this file.
+## Adjust server configuration
+The server will work out of the box, but if desired you can adjust the configuration with your own values. Variable definitions, including the port that the mlflow server runs on and the ssh key used to connect to artifact storage, are are specified in **.env**. To use new values, simply change the definitions in this file.
 
 The configuration of the containers is specified in **docker-compose.yaml**
 To change the images used for each component, commands executed upon startup,
@@ -57,7 +55,7 @@ A minimal example shows only 3 lines of code are needed to track a value:
 >>> import mlflow
 >>> # tell mlflow where to save results to. assumes the server runs on port 5000
 >>> mlflow.set_tracking_uri("http://localhost:5000")
->>> mlflow.log_param("favorite_number", 45) # logs a value to the tracking server
+>>> mlflow.log_param("learning_rate", 0.001) # logs a value to the tracking server
 ```
 
 ## Tracking with mlflow projects
