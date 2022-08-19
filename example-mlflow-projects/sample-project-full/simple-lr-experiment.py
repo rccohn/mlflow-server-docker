@@ -56,7 +56,9 @@ def get_data(params: dict, use_cache: bool):
 
     # attempt to load cached processed data
     data_loaded = False
-    if use_cache == "true" and os.path.isdir(cache_path):
+    print('use cache?', use_cache)
+    print('cached data file exists?', cache_path, os.path.isfile(cache_path))
+    if use_cache == "true" and os.path.isfile(cache_path):
         print("Loading cached data")
         with open(cache_path, "r") as f:
             data = json.load(f)
@@ -132,7 +134,7 @@ def main():
             params = yaml.safe_load(f)
 
         # save parameter file as artifact for reproducibility
-        mlflow.log_artifact("/mnt/params.json", "dataset_params.json")
+        mlflow.log_artifact("/mnt/params.json")
 
         # load the data
         x, y = get_data(params, use_cache=os.environ["USE_CACHE"])
