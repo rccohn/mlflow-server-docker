@@ -32,6 +32,7 @@ services:
       - artifact-store
     build: ./docker-images/mlflow-server # image containing mlflow
     container_name: mlf-tracking-server # deepspparks example mlflow server
+    init: true # mlflow server runs several worker processes, run an init process to properly manage them
     environment:
       - MLF_PUBLIC_KEY
       - MLF_PRIVATE_KEY
