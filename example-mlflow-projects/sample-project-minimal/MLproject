@@ -7,6 +7,11 @@ name: linear_regression_example_minimal
 docker_env:
   image: rccohn/example-mlflow-project-environment:minimal
 
+  # login credentials for mlflow server
+  environment:
+    - MLFLOW_TRACKING_USERNAME
+    - MLFLOW_TRACKING_PASSWORD
+
 # command that gets executed after calling "mlflow run <project>"
 entry_points:
   main:

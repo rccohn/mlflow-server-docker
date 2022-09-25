@@ -2,7 +2,7 @@
 # add non-root user with user ID that matches user on host
 # this allows files saved to bind mounts to be opened and updated 
 # without having to change the permissions after running experiments
-adduser --disabled-password --gecos "" --uid ${USER_UID} mlf-project
+adduser --disabled-password --gecos "" --uid ${DOCKER_UID} mlf-project
 
 # directory added when running project with "mlflow run" command
 mlflow_dir=/mlflow/projects/code

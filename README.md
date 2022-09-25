@@ -1,6 +1,8 @@
 # mlflow-server-docker
 Minimal, fully-containerized mlflow server with remote postgres tracking db and sftp artifact store.
 
+<img src="./.github/schematic.svg" width=1000px>
+
 # High-throughput, portable, reproducible, and organized experiments
 
 Computational researchers, especially in non-cs disciplines, are often expected to write large volumes of code without being taught good development practices. As a result, lots of academic code is messy and buggy, and researchers often "reinvent the wheel" instead of using published code. This project provides a simple, working example of **MLflow** deployed with **docker** for facilitating experiments, with the goal of making these tools easier to adopt by new users.
@@ -66,7 +68,9 @@ for running and tracking them, are provided in the **example-mlflow-projects/** 
 # Accessing the results
 
 ## Browser
-Open your favorite browser and go to **http://localhost:5000** (assuming the server is on port 5000).
+Open your favorite browser and go to **http://localhost:5000** (unless you changed MLFLOW_SERVER_PORT in .env to a different value 5000).
+You will be prompted to enter a username and password. The default credentials are "user" and "password", respectively, and can be changed
+by changing the MLFLOW_TRACKING_USERNAME and MLFLOW_TRACKING_PASSWORD variables in `.env`. After logging in,
 You should see a table of run tracking data. Click on a run to view more details, including 
 the saved models, interactive figures, and more.
 

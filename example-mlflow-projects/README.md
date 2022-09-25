@@ -5,7 +5,7 @@ Mlflow projects package code for individual experiments. The MLproject YAML file
 This section contains two example mlflow projects for reference. Both projects apply simple linear regression models to small synthetic datasets. While not groundbreaking, these projects can be used for reference and also as templates for full projects.
 
 ## Minimal example
-As the name suggests, **sample-project-minimal** provides a very simple project with a basic linear regression model. It runs in a very simple docker environment and does not take any external inputs. Despite this, it demonstrates the core functionality of mlflow projects and tracking, running code and sending the results to the tracking database. It saves tags, parameters, performance metrics, the trained model, and a visualization of the performance to the tracking server.
+As the name suggests, **sample-project-minimal** provides a very simple project with a basic linear regression model. It runs in a very simple docker environment and does not take any external inputs, other than the tracking server login credentials (specified in `../.env`). Despite this, it demonstrates the core functionality of mlflow projects and tracking, running code and sending the results to the tracking database. It saves tags, parameters, performance metrics, the trained model, and a visualization of the performance to the tracking server.
 
 ## Full-featured example 
 Although still simple, **sample-project-full** demonstrates several additional features compared to the minimal example that may be useful when running projects:
@@ -13,6 +13,7 @@ Although still simple, **sample-project-full** demonstrates several additional f
    - The degree of the polynomial to be fit is passed as a parameter to the mlflow project itself.
    - Settings for generating the dataset are mounted to the container from an input deck located on the host (**bind-mounts/params.yaml**). This demonstrates how large numbers of parameters can be passed to projects without having to specify many of python or command line arguments. 
    - The user UID to run the code with, and whether to use cached processed data instead of re-generating the dataset from scratch, are passed to the container as environment variables. This is useful for parameters that do not affect the results of the experiment and should not be logged to the tracking server.
+   - Tracking server login credentials, specified in `../.env`
  - After generating the dataset with a given set of parameters, the data are saved to a cache in the host machine (**bind-mounts/cache**). After the project finishes and the container is removed, the processed data persists on the host machine. If the dataset has already been generated, the project can load the cached data instead of re-processing it.
  - The docker environment correctly handles permissions for the mounted files, instead of changing their ownership to root, preventing the user from accessing them without elevated permissions.
 
@@ -56,7 +57,8 @@ $ cd ../docker-images/example-mlflow-project-environment/${WHICH_PROJECT} && \
 ```
 
 ## View the results
-After running a project, open your favorite browser and go to **http://localhost:5000** (assuming the server is running on port 5000.)
+After running a project, open your favorite browser and go to **http://localhost:5000** (assuming the server is running on port 5000.) You will be prompted to enter a username and password. The default credentials are "user" and "password", respectively, and can be changed
+by changing the MLFLOW_TRACKING_USERNAME and MLFLOW_TRACKING_PASSWORD variables in `../.env`.
 You should see a table of run tracking data. Click on a run to view more details, including 
 the saved models, interactive figures, and more.
 
