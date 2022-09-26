@@ -3,6 +3,8 @@
 # use docker-compose --env-file <environment file> --file <docker-compose file>
 
 services:
+  # To securely access cloud sql, gcp provides the auth proxy.
+  # The mlflow server connects to the proxy as if it was the database server.
   sql-auth-proxy:
     image: gcr.io/cloudsql-docker/gce-proxy:latest
 
