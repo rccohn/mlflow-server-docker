@@ -84,6 +84,10 @@ You can also access run results programatically in Python.
 >>> # get a pandas dataframe of all runs included in the default experiment
 >>> df = mlflow.search_runs([exp_id,])
 ```
+# Using remote tracking backends
+By default, the tracking server will run locally, to avoid any additional dependencies or configuration outside of docker. However, as a modular system, it is easy to reconfigure the server to store tracking data and artifacts on remote resources. 
+
+`mlflow-on-gcp/` provides a working template for running the server on Google Cloud Platform (GCP).
 
 # Need help?
 Feel free to submit questions and requests to the [issue tracker](https://github.com/rccohn/mlflow-server-docker/issues).

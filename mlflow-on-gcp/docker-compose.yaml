@@ -1,0 +1,56 @@
+#  environment variables used in compose file are stored in .env
+# docker-compose looks for .env by default, or you can
+# use docker-compose --env-file <environment file> --file <docker-compose file>
+
+services:
+  sql-auth-proxy:
+    image: gcr.io/cloudsql-docker/gce-proxy:latest
+
+    volumes:  # mount service account authorization key to container
+      - type: bind
+        source: ${SERVICE_ACCOUNT_KEY_SQL} # path to account json credentials
+        target: /config
+        read_only: true
+
+    entrypoint: # command to run gcp sql proxy
+      - /cloud_sql_proxy
+      - -enable_iam_login
+      - -credential_file=/config
+      - -instances=${SQL_CONNECTION_NAME}=tcp:0.0.0.0:5432
+    restart: unless-stopped
+     
+  mlflow-server:
+    depends_on: # need to start backend services so mlflow server can connect to them
+    # when it starts
+      - sql-auth-proxy
+    build: mlflow-server # image containing mlflow
+    container_name: mlf-tracking-server # deepspparks example mlflow server
+    init: true # mlflow server runs several worker processes, run an init process to properly manage them
+    environment:
+      # tell gsutil where to look for authorization
+      - GOOGLE_APPLICATION_CREDENTIALS=/config
+    volumes:
+      # service account key with credentials for storage
+      - type: bind
+        source: ${SERVICE_ACCOUNT_KEY_STORAGE}
+        target: /config
+        read_only: true
+
+    restart: unless-stopped # auto-restart container if it unexpectedly shuts down
+    command: # arguments for mlflow server
+      - --backend-store-uri # connect to postgres db container for storing tracking data
+      - postgresql+psycopg2://${SQL_USERNAME}:${SQL_PASSWD}@sql-auth-proxy:5432/${SQL_DB_NAME}
+      - --artifacts-destination  # use proxy to sftp container to store artifacts
+      - gs://${STORAGE_ARTIFACT_PATH}
+      - --serve-artifacts
+      - --host # listen on 0.0.0.0- allow external traffic
+      - 0.0.0.0
+
+  # nginx reverse proxy adds http authentication (user, password login) to mlflow server)
+  proxy:
+    build: ../docker-images/proxy
+    ports:
+      - ${MLFLOW_SERVER_PORT}:5000/tcp
+    environment:
+      - MLFLOW_TRACKING_USERNAME
+      - MLFLOW_TRACKING_PASSWORD
