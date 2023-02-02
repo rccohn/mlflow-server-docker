@@ -33,7 +33,7 @@ def run_full_project():
     # local files (like in run_minimal.py). When this is done, the remote
     # mlflow ui will link to the corresponding commit in the repository
     project_uri = (
-        "git@github.com:rccohn/mlflow-server-docker.git"
+        "https://github.com/rccohn/mlflow-server-docker.git"
         "#example-mlflow-projects/sample-project-full"
     )
 
