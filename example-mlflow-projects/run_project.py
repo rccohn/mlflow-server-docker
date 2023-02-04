@@ -14,6 +14,7 @@ def run_minimal_project():
     mlflow.projects.run(
         "sample-project-minimal",
         docker_args={"net": "host"},
+        build_image=True
     )
 
 
@@ -47,6 +48,7 @@ def run_full_project():
             project_uri,
             parameters={"degree": degree},
             docker_args={"net": "host"},
+            build_image=True
         )
 
 

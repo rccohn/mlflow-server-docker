@@ -13,6 +13,9 @@ services:
         source: mlf-docker-tracking-db
         target: /var/lib/postgresql/data
         read_only: false
+    
+    networks:
+      - mlf-docker-network
 
   artifact-store:
     build: ./docker-images/sftp-server
@@ -24,6 +27,9 @@ services:
         source: mlf-docker-tracking-artifacts
         target: /home/sftp/artifacts
         read_only: false
+
+    networks:
+      - mlf-docker-network
 
   mlflow-server:
     depends_on: # need to start backend services so mlflow server can connect to them
@@ -46,16 +52,29 @@ services:
       - --serve-artifacts
       - --host # listen on 0.0.0.0- allow external traffic
       - 0.0.0.0
+    
+    networks:
+      - mlf-docker-network
 
   # nginx reverse proxy adds http authentication (user, password login) to mlflow server)
   proxy:
+    depends_on:
+      mlflow-server: 
+        condition: service_healthy
+
     build: docker-images/proxy
     ports:
       - ${MLFLOW_SERVER_PORT}:5000/tcp
     environment:
       - MLFLOW_TRACKING_USERNAME
       - MLFLOW_TRACKING_PASSWORD
+    
+    networks:
+      - mlf-docker-network
 
 volumes:
   mlf-docker-tracking-db:
   mlf-docker-tracking-artifacts:
+
+networks:
+  mlf-docker-network:

@@ -15,10 +15,14 @@ USER mlf-server
 ENV VENV="/home/mlf-server/venv"
 RUN python -m venv ${VENV}
 ENV PATH="${VENV}/bin:${PATH}"
-RUN pip install --upgrade pip && pip install \
-	psycopg2-binary==2.9.3 mlflow==1.27.0 pysftp==0.2.9
 
 WORKDIR /home/mlf-server/
+
+COPY --chown=mlf-server requirements.txt requirements.txt
+RUN pip install --upgrade pip && pip install -r requirements.txt \
+    && rm requirements.txt
+
+
 # to use sftp, mlflow requires ssh to be configured to
 # connect to host without specifying any extra options,
 # so we use the ~/.ssh/config to store all relevant configurations
@@ -35,5 +39,9 @@ EXPOSE 5000
 
 # script to run on startup
 COPY --chown=mlf-server entrypoint.sh entrypoint.sh
+COPY --chown=mlf-server healthcheck.sh healthcheck.sh
+
+HEALTHCHECK --start-period=10s CMD bash healthcheck.sh
+
 RUN chmod +x entrypoint.sh
 ENTRYPOINT ["./entrypoint.sh"]
